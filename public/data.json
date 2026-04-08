@@ -36,6 +36,13 @@
   "companyInfo": "회사명: ShortsGame | 대표: 무명 | 이메일: contact@shortsgame.com",
   "newsFeeds": [
     {
+      "date": "444",
+      "title": "444",
+      "content": "444",
+      "imageUrl": "444",
+      "id": 1775642397534
+    },
+    {
       "date": "111",
       "title": "Dopamine Smith 출시",
       "content": "11",
