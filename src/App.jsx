@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { Gamepad2, LayoutDashboard } from 'lucide-react';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
+import { AppProvider } from './context/AppContext';
 import './index.css';
 
 // Navigation Component
@@ -28,13 +29,15 @@ const Navigation = () => {
 
 function App() {
   return (
-    <Router>
-      <Navigation />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/admin" element={<Admin />} />
-      </Routes>
-    </Router>
+    <AppProvider>
+      <Router>
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<Admin />} />
+        </Routes>
+      </Router>
+    </AppProvider>
   );
 }
 

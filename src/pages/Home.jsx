@@ -1,65 +1,69 @@
-import React from 'react';
-import { ArrowRight, Sparkles, Terminal } from 'lucide-react';
+import React, { useContext } from 'react';
+import { Sparkles, Terminal } from 'lucide-react';
+import { AppContext } from '../context/AppContext';
 
 const Home = () => {
+  const { siteData } = useContext(AppContext);
+
   return (
-    <div className="container">
-      {/* Hero Section */}
-      <section className="hero fade-in" style={{ textAlign: 'center', marginBottom: '5rem', paddingTop: '2rem' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(157, 78, 221, 0.2)', padding: '0.5rem 1rem', borderRadius: '20px', marginBottom: '1.5rem' }}>
-          <Sparkles size={16} color="#c77dff" />
-          <span style={{ fontSize: '0.9rem', color: '#e0c3fc', fontWeight: '600' }}>최신 게임 소식</span>
-        </div>
-        <h1 style={{ fontSize: '4rem', marginBottom: '1.5rem', lineHeight: '1.1' }}>
-          차원이 다른 도파민 퍼즐,<br/>
-          <span className="title-display">Dopamine Smith</span>
-        </h1>
-        <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto 2.5rem auto' }}>
-          ShortsGame이 선보이는 첫 번째 마스터피스. 대장장이 키우기와 퍼즐의 완벽한 조화. 지금 바로 사전예약하고 특별한 보상을 받아보세요.
-        </p>
-        <button className="btn" style={{ fontSize: '1.2rem', padding: '1rem 2.5rem', borderRadius: '30px' }}>
-          사전예약 하기 <ArrowRight size={20} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: '8px' }} />
-        </button>
-      </section>
+    <>
+      <div className="container" style={{ minHeight: '80vh' }}>
+        <section className="hero fade-in" style={{ textAlign: 'center', marginBottom: '5rem', paddingTop: '2rem' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(157, 78, 221, 0.2)', padding: '0.5rem 1rem', borderRadius: '20px', marginBottom: '1.5rem' }}>
+            <Sparkles size={16} color="#c77dff" />
+            <span style={{ fontSize: '0.9rem', color: '#e0c3fc', fontWeight: '600' }}>최신 게임 소식</span>
+          </div>
+          
+          <h1 style={{ fontSize: '3.5rem', marginBottom: '1.5rem', lineHeight: '1.2' }} dangerouslySetInnerHTML={{ __html: siteData.heroTitle }}></h1>
+          <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto 2.5rem auto' }}>
+            {siteData.heroSubtitle}
+          </p>
+        </section>
 
-      {/* News Feed Section */}
-      <section>
-        <h3 style={{ fontSize: '2rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Terminal size={24} color="#9d4edd" />
-          개발자 노트
-        </h3>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-          {/* Card 1 */}
-          <div className="glass-panel" style={{ padding: '2rem', transition: 'transform 0.3s ease', cursor: 'pointer' }}
-               onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-10px)'}
-               onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            <div style={{ height: '200px', background: 'linear-gradient(45deg, #2a0845, #6441A5)', borderRadius: '12px', marginBottom: '1.5rem' }}></div>
-            <span style={{ fontSize: '0.85rem', color: '#c77dff', fontWeight: 'bold' }}>2026. 04. 08</span>
-            <h4 style={{ fontSize: '1.5rem', margin: '0.5rem 0' }}>도파민 스미스, 전투 시스템 개편!</h4>
-            <p style={{ color: 'var(--text-muted)', lineHeight: '1.6' }}>타격감을 극대화하기 위해 코어 엔진을 재설계했습니다. 짜릿한 손맛을 위해 어떤 변화가 있었을까요?</p>
-            <div style={{ marginTop: '1.5rem', color: '#fff', fontSize: '0.9rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
-              더 읽어보기 <ArrowRight size={16} />
-            </div>
+        {/* 텍스트 위주로 개편된 개발자 노트 영역 */}
+        <section>
+          <h3 style={{ fontSize: '2rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Terminal size={24} color="#9d4edd" />
+            개발자 노트
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+            {(siteData.newsFeeds || []).map((feed) => (
+              <div key={feed.id} className="glass-panel" style={{ overflow: 'hidden', transition: 'transform 0.3s ease', cursor: 'pointer' }}
+                   onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-10px)'}
+                   onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+                
+                {/* 썸네일 높이를 100px로 확 줄임 (텍스트 강조형) */}
+                <div style={{ height: '100px', background: `linear-gradient(45deg, #${Math.floor(Math.random()*16777215).toString(16)}, #6441A5)` }}></div>
+                
+                <div style={{ padding: '1.5rem 2rem' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#c77dff', fontWeight: 'bold' }}>{feed.date}</span>
+                  <h4 style={{ fontSize: '1.5rem', margin: '0.5rem 0' }}>{feed.title}</h4>
+                  <p style={{ color: 'var(--text-muted)', lineHeight: '1.6' }}>{feed.content}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <footer style={{ background: 'rgba(0,0,0,0.5)', padding: '3rem 5%', borderTop: '1px solid var(--border-color)', marginTop: '4rem' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
+          <div>
+            <span className="title-display" style={{ fontSize: '1.5rem', display: 'block', marginBottom: '1rem' }}>ShortsGame</span>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{siteData.companyInfo}</p>
           </div>
 
-          {/* Card 2 */}
-          <div className="glass-panel" style={{ padding: '2rem', transition: 'transform 0.3s ease', cursor: 'pointer' }}
-               onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-10px)'}
-               onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            <div style={{ height: '200px', background: 'linear-gradient(45deg, #0f2027, #203a43, #2c5364)', borderRadius: '12px', marginBottom: '1.5rem' }}></div>
-            <span style={{ fontSize: '0.85rem', color: '#c77dff', fontWeight: 'bold' }}>2026. 03. 25</span>
-            <h4 style={{ fontSize: '1.5rem', margin: '0.5rem 0' }}>새로운 무기 디자인 공개</h4>
-            <p style={{ color: 'var(--text-muted)', lineHeight: '1.6' }}>에픽 등급의 새로운 무기들의 실루엣을 전격 공개합니다! 디자인 팀의 땀방울이 녹아든 무기들을 확인하세요.</p>
-            <div style={{ marginTop: '1.5rem', color: '#fff', fontSize: '0.9rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
-              더 읽어보기 <ArrowRight size={16} />
-            </div>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            {siteData.snsLinks.youtube && (
+              <a href={siteData.snsLinks.youtube} target="_blank" rel="noreferrer" style={{ color: '#fff', opacity: 0.7, padding: '10px', textDecoration: 'none' }}>▶️ YouTube</a>
+            )}
+            {siteData.snsLinks.twitter && (
+              <a href={siteData.snsLinks.twitter} target="_blank" rel="noreferrer" style={{ color: '#fff', opacity: 0.7, padding: '10px', textDecoration: 'none' }}>🐦 Twitter</a>
+            )}
           </div>
         </div>
-      </section>
-    </div>
+      </footer>
+    </>
   );
 };
 
