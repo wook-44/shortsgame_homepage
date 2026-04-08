@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Gamepad2, LayoutDashboard } from 'lucide-react';
+import { Gamepad2 } from 'lucide-react';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
 import { AppProvider } from './context/AppContext';
@@ -18,10 +18,6 @@ const Navigation = () => {
       </Link>
       <div className="nav-links">
         <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>뉴스 피드</Link>
-        <Link to="/admin" className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`}>
-          <LayoutDashboard size={18} style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '4px' }} />
-          관리자
-        </Link>
       </div>
     </nav>
   );
@@ -34,7 +30,7 @@ function App() {
         <Navigation />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/gadmin" element={<Admin />} />
         </Routes>
       </Router>
     </AppProvider>
