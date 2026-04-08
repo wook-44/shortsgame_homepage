@@ -57,12 +57,5 @@
       "imageUrl": ""
     }
   ],
-  "subAdmins": [
-    {
-      "id": 1,
-      "role": "운영팀",
-      "username": "manager01",
-      "password": "123"
-    }
-  ]
+  "subAdmins": []
 }
