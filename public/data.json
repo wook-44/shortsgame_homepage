@@ -1,10 +1,20 @@
 {
-  "heroTitle": "차원이 다른 도파민 퍼즐, Dopamine Smith",
-  "heroSubtitle": "ShortsGame이 선보이는 첫 번째 마스터피스. 대장장이 키우기와 퍼즐의 완벽한 조화.",
-  "snsLinks": {
-    "youtube": "https://youtube.com/@shortsgame",
-    "twitter": "https://twitter.com/shortsgame"
-  },
+  "heroTitle": "차원이 다른 도파민 \nDopamine Smith",
+  "heroSubtitle": "ShortsGame이 선보이는 첫 번째 마스터피스",
+  "snsLinks": [
+    {
+      "id": 1,
+      "name": "YouTube",
+      "url": "https://youtube.com/@shortsgame",
+      "iconUrl": ""
+    },
+    {
+      "id": 2,
+      "name": "Twitter",
+      "url": "https://twitter.com/shortsgame",
+      "iconUrl": ""
+    }
+  ],
   "companyInfo": "회사명: ShortsGame | 대표: 무명 | 이메일: contact@shortsgame.com",
   "newsFeeds": [
     {
