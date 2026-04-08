@@ -54,8 +54,8 @@ const Admin = () => {
 
   const handleSaveToken = () => {
     localStorage.setItem('github_token', githubToken);
-    alert("출입증(토큰) 저장 완료! 이제 서버와 동기화됩니다.");
-    loadData(); // 토큰 저장 후 데이터 다시 불러오기 시도
+    alert("출입증(토큰) 저장 완료! 새로고침하여 동기화를 확인해 주세요.");
+    window.location.reload();
   };
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -67,20 +67,20 @@ const Admin = () => {
     if (result.success) {
       alert(successMsg);
     } else {
-      alert("서버 전송 실패: " + result.message + "\n(토큰이 정확한지, 인터넷 연결이 괜찮은지 확인해 주세요.)");
+      alert("⚠️ 저장 실패\n원인: " + result.message + "\n\n(1. 토큰이 올바른지 확인\n2. 인터넷 연결 확인\n3. 잠시 후 다시 시도)");
     }
   };
 
   const handleSaveGeneral = (e) => {
     e.preventDefault();
-    handleCommonUpdate({ ...formData }, "메인 정보가 안전하게 서버에 저장되었습니다.");
+    handleCommonUpdate({ ...formData }, "메인 정보가 안전하게 저장되었습니다.");
   };
 
   const handleAddSns = (e) => {
     e.preventDefault();
     if (!newSns.name || !newSns.url) return;
     const snsList = [...(siteData.snsLinks || []), { ...newSns, id: Date.now() }];
-    handleCommonUpdate({ snsLinks: snsList }, "새로운 SNS 링크가 등록되었습니다.");
+    handleCommonUpdate({ snsLinks: snsList }, "SNS 링크가 추가되었습니다.");
     setNewSns({ name: '', url: '', iconUrl: '' });
   };
 
@@ -97,18 +97,18 @@ const Admin = () => {
   };
 
   const handleDeleteFeed = (id) => {
-    if (window.confirm("정말 삭제하시겠습니까?")) {
+    if (window.confirm("삭제하시겠습니까?")) {
       handleCommonUpdate({ newsFeeds: (siteData.newsFeeds || []).filter(f => f.id !== id) }, "피드가 삭제되었습니다.");
     }
   };
 
   const handleSaveOrder = () => {
-    handleCommonUpdate({ newsFeeds: reorderList }, "뉴스 피드 순서가 서버에 반영되었습니다.");
+    handleCommonUpdate({ newsFeeds: reorderList }, "순서가 변경되었습니다.");
   };
 
   const handleAddAdmin = (e) => {
     e.preventDefault();
-    handleCommonUpdate({ subAdmins: [...(siteData.subAdmins || []), {...newAdmin, id: Date.now()}] }, "새 관리 계정이 생성되었습니다.");
+    handleCommonUpdate({ subAdmins: [...(siteData.subAdmins || []), {...newAdmin, id: Date.now()}] }, "관리 계정이 추가되었습니다.");
     setNewAdmin({ role: '', username: '', password: '' });
   };
 
@@ -116,7 +116,7 @@ const Admin = () => {
     handleCommonUpdate({ subAdmins: (siteData.subAdmins || []).filter(a => a.id !== id) }, "관리 계정이 삭제되었습니다.");
   };
 
-  if (isLoading && syncStatus === 'loading') return <div className="container flex-center"><h3>서버 데이터 연결 중...</h3></div>;
+  if (isLoading && syncStatus === 'loading') return <div className="container flex-center"><h3>연결 중...</h3></div>;
 
   if (!isLoggedIn) {
     return (
@@ -125,11 +125,11 @@ const Admin = () => {
           <div style={{ width: '60px', height: '60px', background: 'rgba(157, 78, 221, 0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
             <Lock size={30} color="#c77dff" />
           </div>
-          <h2>ShortsGame 운영실</h2>
+          <h2>ShortsGame</h2>
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
             <input type="text" placeholder="아이디" value={loginForm.id} onChange={e => setLoginForm({...loginForm, id: e.target.value})} style={{ padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff' }} required />
             <input type="password" placeholder="비밀번호" value={loginForm.password} onChange={e => setLoginForm({...loginForm, password: e.target.value})} style={{ padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff' }} required />
-            <button type="submit" className="btn">접속하기</button>
+            <button type="submit" className="btn">접속</button>
           </form>
         </div>
       </div>
@@ -141,65 +141,61 @@ const Admin = () => {
        {isSaving && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <RefreshCw size={50} color="#c77dff" className="spin" />
-          <h3 style={{ marginTop: '1.5rem' }}>서버 전송 중...</h3>
+          <h3 style={{ marginTop: '1.5rem' }}>저장 중...</h3>
         </div>
       )}
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <h2>마스터 대시보드</h2>
+            <h2 className="title-display">Dashboard</h2>
             {syncStatus === 'success' ? (
-              <span style={{ fontSize: '0.8rem', background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', padding: '4px 10px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                <CheckCircle size={14} /> 서버 연결됨
-              </span>
-            ) : syncStatus === 'error' ? (
-              <span style={{ fontSize: '0.8rem', background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', padding: '4px 10px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                <XCircle size={14} /> 연결 끊김 (토큰 필요)
+              <span style={{ fontSize: '0.7rem', background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', padding: '4px 10px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <CheckCircle size={12} /> 실시간 연결됨
               </span>
             ) : (
-              <span style={{ fontSize: '0.8rem', background: 'rgba(255, 255, 255, 0.1)', color: '#fff', padding: '4px 10px', borderRadius: '12px' }}>
-                상태 확인 중...
+              <span style={{ fontSize: '0.7rem', background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', padding: '4px 10px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <XCircle size={12} /> 오프라인 모드
               </span>
             )}
           </div>
-          <span style={{ fontSize: '0.9rem', color: '#c77dff' }}>{roleInfo}</span>
+          <span style={{ fontSize: '0.8rem', color: '#c77dff' }}>{roleInfo}</span>
         </div>
-        <button onClick={() => setIsLoggedIn(false)} className="btn" style={{ background: 'rgba(255,255,255,0.1)' }}>로그아웃</button>
+        <button onClick={() => setIsLoggedIn(false)} className="btn" style={{ background: 'rgba(255,255,255,0.1)', padding: '0.5rem 1rem' }}>로그아웃</button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '250px 1fr', gap: '2rem' }}>
-        <div className="glass-panel" style={{ padding: '1.5rem', height: 'fit-content' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '2rem' }}>
+        <div className="glass-panel" style={{ padding: '1.2rem', height: 'fit-content' }}>
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <li onClick={() => setActiveTab('general')} style={{ padding: '1rem', background: activeTab === 'general' ? 'var(--accent-glow)' : 'transparent', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}><Settings size={18} /> 메인 정보</li>
-            <li onClick={() => setActiveTab('sns')} style={{ padding: '1rem', background: activeTab === 'sns' ? 'var(--accent-glow)' : 'transparent', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}><Share2 size={18} /> SNS 관리</li>
-            <li onClick={() => setActiveTab('feeds')} style={{ padding: '1rem', background: activeTab === 'feeds' ? 'var(--accent-glow)' : 'transparent', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}><Plus size={18} /> 피드/순서 관리</li>
-            <li onClick={() => setActiveTab('admins')} style={{ padding: '1rem', background: activeTab === 'admins' ? 'var(--accent-glow)' : 'transparent', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}><Users size={18} /> 계정 관리</li>
-            <li onClick={() => setActiveTab('sync')} style={{ padding: '1rem', background: activeTab === 'sync' ? 'var(--accent-glow)' : 'transparent', borderRadius: '8px', border: '1px solid #c77dff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '1rem' }}><ShieldCheck size={18} color="#c77dff" /> 동기화 설정</li>
+            <li onClick={() => setActiveTab('general')} style={{ padding: '0.8rem', background: activeTab === 'general' ? 'var(--accent-glow)' : 'transparent', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem' }}><Settings size={16} /> 메인 정보</li>
+            <li onClick={() => setActiveTab('sns')} style={{ padding: '0.8rem', background: activeTab === 'sns' ? 'var(--accent-glow)' : 'transparent', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem' }}><Share2 size={16} /> SNS 관리</li>
+            <li onClick={() => setActiveTab('feeds')} style={{ padding: '0.8rem', background: activeTab === 'feeds' ? 'var(--accent-glow)' : 'transparent', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem' }}><Plus size={16} /> 뉴스/순서</li>
+            <li onClick={() => setActiveTab('admins')} style={{ padding: '0.8rem', background: activeTab === 'admins' ? 'var(--accent-glow)' : 'transparent', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem' }}><Users size={16} /> 계정 관리</li>
+            <li onClick={() => setActiveTab('sync')} style={{ padding: '0.8rem', background: activeTab === 'sync' ? 'var(--accent-glow)' : 'transparent', borderRadius: '8px', border: '1px solid #c77dff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '1rem', fontSize: '0.9rem' }}><ShieldCheck size={16} color="#c77dff" /> 동기화 토큰</li>
           </ul>
         </div>
 
         <div className="glass-panel" style={{ padding: '2rem' }}>
           {activeTab === 'general' && (
             <form onSubmit={handleSaveGeneral} className="fade-in">
-              <h3 style={{ marginBottom: '1.5rem' }}>대문 문구 수정</h3>
+              <h3 style={{ marginBottom: '1.5rem' }}>기본 텍스트 관리</h3>
               <textarea name="heroTitle" value={formData.heroTitle} onChange={handleChange} rows="2" style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem' }} />
               <textarea name="heroSubtitle" value={formData.heroSubtitle} onChange={handleChange} rows="3" style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem' }} />
               <input type="text" name="companyInfo" value={formData.companyInfo} onChange={handleChange} placeholder="푸터 정보" style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
-              <button type="submit" className="btn" style={{ marginTop: '1.5rem' }}>저장하기</button>
+              <button type="submit" className="btn" style={{ marginTop: '1.5rem' }}>메인 정보 저장</button>
             </form>
           )}
 
           {activeTab === 'sns' && (
             <div className="fade-in">
-              <h3 style={{ marginBottom: '1.5rem' }}>SNS 링크 관리</h3>
+              <h3 style={{ marginBottom: '1.5rem' }}>SNS 링크</h3>
               <form onSubmit={handleAddSns} style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                  <input type="text" placeholder="SNS 이름" value={newSns.name} onChange={e => setNewSns({...newSns, name: e.target.value})} style={{ padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff' }} required />
-                  <input type="text" placeholder="아이콘 주소" value={newSns.iconUrl} onChange={e => setNewSns({...newSns, iconUrl: e.target.value})} style={{ padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
+                  <input type="text" placeholder="이름" value={newSns.name} onChange={e => setNewSns({...newSns, name: e.target.value})} style={{ padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff' }} required />
+                  <input type="text" placeholder="아이콘 이미지 URL" value={newSns.iconUrl} onChange={e => setNewSns({...newSns, iconUrl: e.target.value})} style={{ padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
                 </div>
-                <input type="text" placeholder="연결 링크" value={newSns.url} onChange={e => setNewSns({...newSns, url: e.target.value})} style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem' }} required />
-                <button type="submit" className="btn">추가</button>
+                <input type="text" placeholder="링크 주소" value={newSns.url} onChange={e => setNewSns({...newSns, url: e.target.value})} style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem' }} required />
+                <button type="submit" className="btn">링크 추가</button>
               </form>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                 {(siteData.snsLinks || []).map(sns => (
@@ -217,59 +213,72 @@ const Admin = () => {
 
           {activeTab === 'feeds' && (
             <div className="fade-in">
-              <h3 style={{ marginBottom: '1.5rem' }}>피드 추가하기</h3>
+              <h3 style={{ marginBottom: '1.5rem' }}>피드 소식 추가</h3>
               <form onSubmit={handleAddFeed} style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', marginBottom: '3rem' }}>
-                <input type="text" placeholder="날짜" maxLength={20} value={newFeed.date} onChange={e => setNewFeed({...newFeed, date: e.target.value})} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem', borderRadius: '8px' }} required />
-                <input type="text" placeholder="제목 (20자)" maxLength={20} value={newFeed.title} onChange={e => setNewFeed({...newFeed, title: e.target.value})} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem', borderRadius: '8px' }} required />
-                <input type="text" placeholder="이미지 주소" value={newFeed.imageUrl} onChange={e => setNewFeed({...newFeed, imageUrl: e.target.value})} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem', borderRadius: '8px' }} />
-                <textarea placeholder="내용" value={newFeed.content} onChange={e => setNewFeed({...newFeed, content: e.target.value})} rows="3" style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem', borderRadius: '8px' }} required />
-                <button type="submit" className="btn">신규 발행</button>
+                <input type="text" placeholder="날짜 (예: 2026.04.08)" maxLength={20} value={newFeed.date} onChange={e => setNewFeed({...newFeed, date: e.target.value})} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem', borderRadius: '8px' }} required />
+                <input type="text" placeholder="제목 (최대 20자)" maxLength={20} value={newFeed.title} onChange={e => setNewFeed({...newFeed, title: e.target.value})} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem', borderRadius: '8px' }} required />
+                <input type="text" placeholder="썸네일 이미지 URL" value={newFeed.imageUrl} onChange={e => setNewFeed({...newFeed, imageUrl: e.target.value})} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem', borderRadius: '8px' }} />
+                <textarea placeholder="내용 입력..." value={newFeed.content} onChange={e => setNewFeed({...newFeed, content: e.target.value})} rows="3" style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem', borderRadius: '8px' }} required />
+                <button type="submit" className="btn">피드 발행</button>
               </form>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-                <h3>글 순서 관리 (드래그)</h3>
-                <button onClick={handleSaveOrder} className="btn" style={{ background: '#9d4edd', padding: '0.6rem 2rem', fontSize: '0.9rem' }}><Save size={16} style={{display:'inline', marginRight:'6px'}}/> 변경 순서 저장</button>
+                <h3>순서 관리 (드래그)</h3>
+                <button onClick={handleSaveOrder} className="btn" style={{ background: '#9d4edd', padding: '0.6rem 2rem', fontSize: '0.8rem' }}><Save size={14} style={{display:'inline', marginRight:'6px'}}/> 정렬 순서 저장</button>
               </div>
 
               {reorderList.length > 0 ? (
-                <Reorder.Group axis="y" values={reorderList} onReorder={setReorderList} style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <Reorder.Group axis="y" values={reorderList} onReorder={setReorderList} style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                   {reorderList.map((feed) => (
                     <Reorder.Item key={feed.id} value={feed}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '1.2rem', borderRadius: '12px', cursor: 'grab', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '8px', cursor: 'grab', border: '1px solid rgba(255,255,255,0.05)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                          <MoveVertical size={18} color="var(--text-muted)" />
+                          <MoveVertical size={16} color="var(--text-muted)" />
                           <div>
-                            <span style={{ fontSize: '0.8rem', color: '#c77dff' }}>{feed.date}</span>
-                            <div style={{ fontWeight: 'bold' }}>{feed.title}</div>
+                            <span style={{ fontSize: '0.75rem', color: '#c77dff' }}>{feed.date}</span>
+                            <div style={{ fontWeight: '600', fontSize: '0.95rem' }}>{feed.title}</div>
                           </div>
                         </div>
                         <button onClick={(e) => { e.stopPropagation(); handleDeleteFeed(feed.id); }} style={{ color: '#ff4d4d', background: 'none', border: 'none', padding: '10px' }}>
-                          <Trash2 size={18} />
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </Reorder.Item>
                   ))}
                 </Reorder.Group>
               ) : (
-                <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>가져올 데이터가 없습니다. 상단 [서버 연결됨] 표시를 확인해 주세요.</div>
+                <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>데이터가 비어있습니다.</div>
               )}
+            </div>
+          )}
+
+          {activeTab === 'admins' && (
+            <div className="fade-in">
+              <h3 style={{ marginBottom: '1.5rem' }}>계정 관리 (서브 관리자)</h3>
+              <form onSubmit={handleAddAdmin} style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
+                <input type="text" placeholder="직급/역할" value={newAdmin.role} onChange={e => setNewAdmin({...newAdmin, role: e.target.value})} style={{ flex: 1, padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', borderRadius: '8px' }} required />
+                <input type="text" placeholder="아이디" value={newAdmin.username} onChange={e => setNewAdmin({...newAdmin, username: e.target.value})} style={{ flex: 1, padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', borderRadius: '8px' }} required />
+                <input type="text" placeholder="비밀번호" value={newAdmin.password} onChange={e => setNewAdmin({...newAdmin, password: e.target.value})} style={{ flex: 1, padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', borderRadius: '8px' }} required />
+                <button type="submit" className="btn">중가</button>
+              </form>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {(siteData.subAdmins || []).map(a => (
+                  <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px' }}>
+                    <span><b>{a.role}</b>: {a.username}</span>
+                    <button onClick={() => handleDeleteAdmin(a.id)} style={{ color: '#ff4d4d', background: 'none', border: 'none' }}><Trash2 size={16} /></button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
           {activeTab === 'sync' && (
             <div className="fade-in">
-              <h3 style={{ marginBottom: '1.5rem' }}>동기화 출입증(토큰) 설정</h3>
-              <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '1.5rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>서버와 글을 주고받기 위해 깃허브 토큰이 필요합니다. 토큰이 없으면 내 브라우저에만 저장되고 다른 사람에게는 보이지 않습니다.</p>
-                <input type="password" placeholder="ghp_로 시작되는 토큰 입력" value={githubToken} onChange={e => setGithubToken(e.target.value)} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }} />
-                <button onClick={handleSaveToken} className="btn" style={{ width: '100%', marginTop: '1rem' }}>토큰 저장 및 연결</button>
-              </div>
-              
-              <div style={{ background: 'rgba(157, 78, 221, 0.1)', padding: '1.5rem', borderRadius: '12px', display: 'flex', gap: '15px', alignItems: 'flex-start' }}>
-                <AlertCircle size={20} color="#c77dff" style={{ flexShrink: 0 }} />
-                <div style={{ fontSize: '0.85rem', color: '#e0c3fc', lineHeight: '1.6' }}>
-                  <b>도움말:</b> 저장 후 라이브 페이지에 즉시 반영되지 않는다면, 브라우저의 캐시(저장된 예전 페이지) 때문일 수 있습니다. 관리자 페이지 상단의 초록색 <b>'서버 연결됨'</b> 표시가 떠 있는지 확인해 보세요!
-                </div>
+              <h3 style={{ marginBottom: '1.5rem' }}>동기화 설정</h3>
+              <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '1.5rem', borderRadius: '12px' }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>깃허브 토큰(`ghp_...`)을 입력해 주세요. 이 기기 브라우저에 저장되어 실시간 서버 저장이 가능해집니다.</p>
+                <input type="password" placeholder="ghp_ 토큰 입력" value={githubToken} onChange={e => setGithubToken(e.target.value)} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', borderRadius: '8px' }} />
+                <button onClick={handleSaveToken} className="btn" style={{ width: '100%', marginTop: '1rem' }}>설정 완료</button>
               </div>
             </div>
           )}
