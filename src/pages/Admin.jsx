@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Lock, Settings, LogOut, Save, Plus, Users, Trash2, ShieldCheck, RefreshCw, Link as LinkIcon, Share2, MoveVertical } from 'lucide-react';
+import { Lock, Settings, LogOut, Save, Plus, Users, Trash2, ShieldCheck, RefreshCw, Link as LinkIcon, Share2, MoveVertical, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { AppContext } from '../context/AppContext';
 import { Reorder } from 'framer-motion';
 
@@ -7,23 +7,18 @@ const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
   const [roleInfo, setRoleInfo] = useState('');
-  const { siteData, updateData, isLoading } = useContext(AppContext);
+  const { siteData, updateData, isLoading, syncStatus, loadData } = useContext(AppContext);
   
-  // 상태 관리
   const [isSaving, setIsSaving] = useState(false);
   const [githubToken, setGithubToken] = useState(() => localStorage.getItem('github_token') || '');
-  
-  // 피드 순서 조절을 위한 로컬 상태
   const [reorderList, setReorderList] = useState([]);
 
-  // 초기 폼 데이터 바인딩
   useEffect(() => {
     if (siteData && siteData.newsFeeds) {
       setReorderList(siteData.newsFeeds);
     }
   }, [siteData]);
 
-  // 로그인 입력 상태
   const [loginForm, setLoginForm] = useState({ id: '', password: '' });
   const [formData, setFormData] = useState({ heroTitle: '', heroSubtitle: '', companyInfo: '' });
   const [newSns, setNewSns] = useState({ name: '', url: '', iconUrl: '' });
@@ -59,7 +54,8 @@ const Admin = () => {
 
   const handleSaveToken = () => {
     localStorage.setItem('github_token', githubToken);
-    alert("출입증(토큰) 저장 완료!");
+    alert("출입증(토큰) 저장 완료! 이제 서버와 동기화됩니다.");
+    loadData(); // 토큰 저장 후 데이터 다시 불러오기 시도
   };
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -69,63 +65,58 @@ const Admin = () => {
     const result = await updateData(updatePkg, githubToken);
     setIsSaving(false);
     if (result.success) {
-      alert(successMsg + (result.localOnly ? " (로컬 저장)" : " 및 서버 반영 완료!"));
+      alert(successMsg);
     } else {
-      alert("오류: " + result.message);
+      alert("서버 전송 실패: " + result.message + "\n(토큰이 정확한지, 인터넷 연결이 괜찮은지 확인해 주세요.)");
     }
   };
 
   const handleSaveGeneral = (e) => {
     e.preventDefault();
-    handleCommonUpdate({
-      heroTitle: formData.heroTitle,
-      heroSubtitle: formData.heroSubtitle,
-      companyInfo: formData.companyInfo
-    }, "기본 정보 수정 완료");
+    handleCommonUpdate({ ...formData }, "메인 정보가 안전하게 서버에 저장되었습니다.");
   };
 
   const handleAddSns = (e) => {
     e.preventDefault();
     if (!newSns.name || !newSns.url) return;
     const snsList = [...(siteData.snsLinks || []), { ...newSns, id: Date.now() }];
-    handleCommonUpdate({ snsLinks: snsList }, "SNS 링크 추가 완료");
+    handleCommonUpdate({ snsLinks: snsList }, "새로운 SNS 링크가 등록되었습니다.");
     setNewSns({ name: '', url: '', iconUrl: '' });
   };
 
   const handleDeleteSns = (id) => {
     const snsList = (siteData.snsLinks || []).filter(s => s.id !== id);
-    handleCommonUpdate({ snsLinks: snsList }, "SNS 링크 삭제 완료");
+    handleCommonUpdate({ snsLinks: snsList }, "SNS 링크가 삭제되었습니다.");
   };
 
   const handleAddFeed = (e) => {
     e.preventDefault();
     const updatedFeeds = [{...newFeed, id: Date.now()}, ...(siteData.newsFeeds || [])];
-    handleCommonUpdate({ newsFeeds: updatedFeeds }, "피드 등록 완료");
+    handleCommonUpdate({ newsFeeds: updatedFeeds }, "새 피드가 발행되었습니다.");
     setNewFeed({ date: '', title: '', content: '', imageUrl: '' });
   };
 
   const handleDeleteFeed = (id) => {
-    if (window.confirm("삭제하시겠습니까?")) {
-      handleCommonUpdate({ newsFeeds: (siteData.newsFeeds || []).filter(f => f.id !== id) }, "피드 삭제 완료");
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      handleCommonUpdate({ newsFeeds: (siteData.newsFeeds || []).filter(f => f.id !== id) }, "피드가 삭제되었습니다.");
     }
   };
 
-  // 피드 순서 저장
   const handleSaveOrder = () => {
-    handleCommonUpdate({ newsFeeds: reorderList }, "피드 순서가 변경 및 저장되었습니다.");
+    handleCommonUpdate({ newsFeeds: reorderList }, "뉴스 피드 순서가 서버에 반영되었습니다.");
   };
 
   const handleAddAdmin = (e) => {
     e.preventDefault();
-    handleCommonUpdate({ subAdmins: [...(siteData.subAdmins || []), {...newAdmin, id: Date.now()}] }, "관리자 추가 완료");
+    handleCommonUpdate({ subAdmins: [...(siteData.subAdmins || []), {...newAdmin, id: Date.now()}] }, "새 관리 계정이 생성되었습니다.");
     setNewAdmin({ role: '', username: '', password: '' });
   };
 
   const handleDeleteAdmin = (id) => {
-    handleCommonUpdate({ subAdmins: (siteData.subAdmins || []).filter(a => a.id !== id) }, "관리자 삭제 완료");
+    handleCommonUpdate({ subAdmins: (siteData.subAdmins || []).filter(a => a.id !== id) }, "관리 계정이 삭제되었습니다.");
   };
 
-  if (isLoading) return <div className="container flex-center"><h3>서버 연결 중...</h3></div>;
+  if (isLoading && syncStatus === 'loading') return <div className="container flex-center"><h3>서버 데이터 연결 중...</h3></div>;
 
   if (!isLoggedIn) {
     return (
@@ -134,11 +125,11 @@ const Admin = () => {
           <div style={{ width: '60px', height: '60px', background: 'rgba(157, 78, 221, 0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
             <Lock size={30} color="#c77dff" />
           </div>
-          <h2>사이트 관리 로그인</h2>
+          <h2>ShortsGame 운영실</h2>
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
             <input type="text" placeholder="아이디" value={loginForm.id} onChange={e => setLoginForm({...loginForm, id: e.target.value})} style={{ padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff' }} required />
             <input type="password" placeholder="비밀번호" value={loginForm.password} onChange={e => setLoginForm({...loginForm, password: e.target.value})} style={{ padding: '1rem', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', color: '#fff' }} required />
-            <button type="submit" className="btn">접속</button>
+            <button type="submit" className="btn">접속하기</button>
           </form>
         </div>
       </div>
@@ -150,13 +141,28 @@ const Admin = () => {
        {isSaving && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <RefreshCw size={50} color="#c77dff" className="spin" />
-          <h3 style={{ marginTop: '1.5rem' }}>서버 전송 및 동기화 중...</h3>
+          <h3 style={{ marginTop: '1.5rem' }}>서버 전송 중...</h3>
         </div>
       )}
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
         <div>
-          <h2>마스터 대시보드</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h2>마스터 대시보드</h2>
+            {syncStatus === 'success' ? (
+              <span style={{ fontSize: '0.8rem', background: 'rgba(34, 197, 94, 0.2)', color: '#4ade80', padding: '4px 10px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <CheckCircle size={14} /> 서버 연결됨
+              </span>
+            ) : syncStatus === 'error' ? (
+              <span style={{ fontSize: '0.8rem', background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', padding: '4px 10px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <XCircle size={14} /> 연결 끊김 (토큰 필요)
+              </span>
+            ) : (
+              <span style={{ fontSize: '0.8rem', background: 'rgba(255, 255, 255, 0.1)', color: '#fff', padding: '4px 10px', borderRadius: '12px' }}>
+                상태 확인 중...
+              </span>
+            )}
+          </div>
           <span style={{ fontSize: '0.9rem', color: '#c77dff' }}>{roleInfo}</span>
         </div>
         <button onClick={() => setIsLoggedIn(false)} className="btn" style={{ background: 'rgba(255,255,255,0.1)' }}>로그아웃</button>
@@ -217,40 +223,54 @@ const Admin = () => {
                 <input type="text" placeholder="제목 (20자)" maxLength={20} value={newFeed.title} onChange={e => setNewFeed({...newFeed, title: e.target.value})} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem', borderRadius: '8px' }} required />
                 <input type="text" placeholder="이미지 주소" value={newFeed.imageUrl} onChange={e => setNewFeed({...newFeed, imageUrl: e.target.value})} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem', borderRadius: '8px' }} />
                 <textarea placeholder="내용" value={newFeed.content} onChange={e => setNewFeed({...newFeed, content: e.target.value})} rows="3" style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginBottom: '1rem', borderRadius: '8px' }} required />
-                <button type="submit" className="btn">새 피드 발행</button>
+                <button type="submit" className="btn">신규 발행</button>
               </form>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', pb: '1rem' }}>
-                <h3>글 순서 관리 (드래그하여 변경)</h3>
-                <button onClick={handleSaveOrder} className="btn" style={{ background: '#9d4edd', padding: '0.6rem 2rem', fontSize: '0.9rem' }}><Save size={16} style={{display:'inline', marginRight:'6px'}}/> 현재 순서 저장</button>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
+                <h3>글 순서 관리 (드래그)</h3>
+                <button onClick={handleSaveOrder} className="btn" style={{ background: '#9d4edd', padding: '0.6rem 2rem', fontSize: '0.9rem' }}><Save size={16} style={{display:'inline', marginRight:'6px'}}/> 변경 순서 저장</button>
               </div>
 
-              <Reorder.Group axis="y" values={reorderList} onReorder={setReorderList} style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {reorderList.map((feed) => (
-                  <Reorder.Item key={feed.id} value={feed}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '1.2rem', borderRadius: '12px', cursor: 'grab', border: '1px solid rgba(255,255,255,0.05)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                        <MoveVertical size={18} color="var(--text-muted)" />
-                        <div>
-                          <span style={{ fontSize: '0.8rem', color: '#c77dff' }}>{feed.date}</span>
-                          <div style={{ fontWeight: 'bold' }}>{feed.title}</div>
+              {reorderList.length > 0 ? (
+                <Reorder.Group axis="y" values={reorderList} onReorder={setReorderList} style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {reorderList.map((feed) => (
+                    <Reorder.Item key={feed.id} value={feed}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '1.2rem', borderRadius: '12px', cursor: 'grab', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                          <MoveVertical size={18} color="var(--text-muted)" />
+                          <div>
+                            <span style={{ fontSize: '0.8rem', color: '#c77dff' }}>{feed.date}</span>
+                            <div style={{ fontWeight: 'bold' }}>{feed.title}</div>
+                          </div>
                         </div>
+                        <button onClick={(e) => { e.stopPropagation(); handleDeleteFeed(feed.id); }} style={{ color: '#ff4d4d', background: 'none', border: 'none', padding: '10px' }}>
+                          <Trash2 size={18} />
+                        </button>
                       </div>
-                      <button onClick={(e) => { e.stopPropagation(); handleDeleteFeed(feed.id); }} style={{ color: '#ff4d4d', background: 'none', border: 'none', padding: '10px' }}>
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </Reorder.Item>
-                ))}
-              </Reorder.Group>
+                    </Reorder.Item>
+                  ))}
+                </Reorder.Group>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>가져올 데이터가 없습니다. 상단 [서버 연결됨] 표시를 확인해 주세요.</div>
+              )}
             </div>
           )}
 
           {activeTab === 'sync' && (
             <div className="fade-in">
-              <h3>출입증(토큰) 설정</h3>
-              <input type="password" placeholder="ghp_..." value={githubToken} onChange={e => setGithubToken(e.target.value)} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', marginTop: '1rem', borderRadius: '8px' }} />
-              <button onClick={handleSaveToken} className="btn" style={{ width: '100%', marginTop: '1rem' }}>저장하기</button>
+              <h3 style={{ marginBottom: '1.5rem' }}>동기화 출입증(토큰) 설정</h3>
+              <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '1.5rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>서버와 글을 주고받기 위해 깃허브 토큰이 필요합니다. 토큰이 없으면 내 브라우저에만 저장되고 다른 사람에게는 보이지 않습니다.</p>
+                <input type="password" placeholder="ghp_로 시작되는 토큰 입력" value={githubToken} onChange={e => setGithubToken(e.target.value)} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }} />
+                <button onClick={handleSaveToken} className="btn" style={{ width: '100%', marginTop: '1rem' }}>토큰 저장 및 연결</button>
+              </div>
+              
+              <div style={{ background: 'rgba(157, 78, 221, 0.1)', padding: '1.5rem', borderRadius: '12px', display: 'flex', gap: '15px', alignItems: 'flex-start' }}>
+                <AlertCircle size={20} color="#c77dff" style={{ flexShrink: 0 }} />
+                <div style={{ fontSize: '0.85rem', color: '#e0c3fc', lineHeight: '1.6' }}>
+                  <b>도움말:</b> 저장 후 라이브 페이지에 즉시 반영되지 않는다면, 브라우저의 캐시(저장된 예전 페이지) 때문일 수 있습니다. 관리자 페이지 상단의 초록색 <b>'서버 연결됨'</b> 표시가 떠 있는지 확인해 보세요!
+                </div>
+              </div>
             </div>
           )}
         </div>

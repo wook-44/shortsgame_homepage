@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 
 // === 데이터베이스 초기값 설정 === 
 const defaultData = {
@@ -22,69 +22,83 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [siteData, setSiteData] = useState(defaultData);
   const [isLoading, setIsLoading] = useState(true);
+  const [syncStatus, setSyncStatus] = useState('idle'); // 'idle', 'loading', 'success', 'error'
 
-  // 1. 공용 데이터 로드 (data 브랜치의 장부를 실시간으로 읽어옵니다)
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const owner = "wook-44";
-        const repo = "shortsgame_homepage";
-        const path = "public/data.json";
-        const branch = "data";
+  // 데이터 로드 함수 (캐시 방지 강화)
+  const loadData = useCallback(async () => {
+    setIsLoading(true);
+    setSyncStatus('loading');
+    try {
+      const owner = "wook-44";
+      const repo = "shortsgame_homepage";
+      const path = "public/data.json";
+      const branch = "data";
 
-        // Raw 주소는 속도가 빠르고 Rate Limit 제약이 적어 실시간 패치에 유리합니다.
-        const response = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}?t=${Date.now()}`);
+      // 1. GitHub API를 통해 실시간 데이터와 SHA값을 가져옵니다. (캐시 무력화 t 파라미터)
+      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}&t=${Date.now()}`, {
+        cache: 'no-store'
+      });
+      
+      if (res.ok) {
+        const fileInfo = await res.json();
+        // UTF-8 디코딩 안전하게 처리
+        const content = decodeURIComponent(escape(atob(fileInfo.content)));
+        const cloudData = JSON.parse(content);
         
-        if (response.ok) {
-          const cloudData = await response.json();
-          setSiteData(prev => ({
-            ...defaultData,
-            ...cloudData,
-            snsLinks: Array.isArray(cloudData.snsLinks) ? cloudData.snsLinks : defaultData.snsLinks,
-            newsFeeds: Array.isArray(cloudData.newsFeeds) ? cloudData.newsFeeds : (cloudData.newsFeeds ? Object.values(cloudData.newsFeeds) : defaultData.newsFeeds)
-          }));
-        } else {
-          console.warn("서버 데이터 응답 없음, 로컬 저장소 확인");
-          const saved = localStorage.getItem('shortsgameData');
-          if (saved) setSiteData(JSON.parse(saved));
-        }
-      } catch (e) {
-        console.error("데이터 로드 실패:", e);
-      } finally {
-        setIsLoading(false);
+        setSiteData({
+          ...defaultData,
+          ...cloudData,
+          snsLinks: Array.isArray(cloudData.snsLinks) ? cloudData.snsLinks : defaultData.snsLinks,
+          newsFeeds: Array.isArray(cloudData.newsFeeds) ? cloudData.newsFeeds : defaultData.newsFeeds
+        });
+        setSyncStatus('success');
+      } else {
+        throw new Error("서버 응답 없음");
       }
-    };
-    loadData();
+    } catch (e) {
+      console.error("데이터 로드 실패:", e);
+      setSyncStatus('error');
+      const saved = localStorage.getItem('shortsgameData');
+      if (saved) setSiteData(JSON.parse(saved));
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  // 2. 데이터 저장 (GitHub API를 사용해 data 브랜치 업데이트)
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // 데이터 저장 함수
   const syncToGithubServer = async (newData, githubToken) => {
     if (!githubToken) {
       localStorage.setItem('shortsgameData', JSON.stringify(newData));
-      return { success: false, message: "토큰이 없습니다." };
+      return { success: false, message: "동기화 토큰이 설정되지 않았습니다." };
     }
 
+    setSyncStatus('loading');
     try {
       const owner = "wook-44";
       const repo = "shortsgame_homepage";
       const path = "public/data.json";
       const branch = "data";
       
-      // 최신 SHA값 획득 (API 사용)
-      const getFileRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`, {
-        headers: { "Authorization": `token ${githubToken}` }
+      // 1. 최신 SHA값 획득 (충돌 방지)
+      const getFileRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}&t=${Date.now()}`, {
+        headers: { "Authorization": `token ${githubToken}` },
+        cache: 'no-store'
       });
       
       let sha = "";
       if (getFileRes.ok) {
         const fileData = await getFileRes.json();
         sha = fileData.sha;
+      } else {
+        throw new Error("서버의 최신 상태를 가져오지 못했습니다. 토큰을 확인해 주세요.");
       }
 
-      // 데이터 인코딩 (UTF-8 대응)
-      const jsonStr = JSON.stringify(newData, null, 2);
-      const content = btoa(unescape(encodeURIComponent(jsonStr)));
-
+      // 2. 데이터 인코딩 및 전송
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2))));
       const updateRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
         method: "PUT",
         headers: {
@@ -101,13 +115,15 @@ export const AppProvider = ({ children }) => {
 
       if (updateRes.ok) {
         localStorage.setItem('shortsgameData', JSON.stringify(newData));
+        setSyncStatus('success');
         return { success: true };
       } else {
         const errData = await updateRes.json();
-        return { success: false, message: errData.message };
+        throw new Error(errData.message);
       }
     } catch (error) {
-      return { success: false, message: error.toString() };
+      setSyncStatus('error');
+      return { success: false, message: error.message };
     }
   };
 
@@ -123,7 +139,7 @@ export const AppProvider = ({ children }) => {
   };
 
   return (
-    <AppContext.Provider value={{ siteData, updateData, isLoading }}>
+    <AppContext.Provider value={{ siteData, updateData, isLoading, syncStatus, loadData }}>
       {children}
     </AppContext.Provider>
   );
