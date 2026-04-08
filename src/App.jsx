@@ -30,7 +30,7 @@ const Navigation = () => {
 function App() {
   return (
     <AppProvider>
-      <Router>
+      <Router basename={import.meta.env.BASE_URL}>
         <Navigation />
         <Routes>
           <Route path="/" element={<Home />} />
