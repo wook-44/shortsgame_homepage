@@ -22,26 +22,22 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [siteData, setSiteData] = useState(defaultData);
   const [isLoading, setIsLoading] = useState(true);
-  const [syncStatus, setSyncStatus] = useState('idle'); // 'idle', 'loading', 'success', 'error'
+  const [syncStatus, setSyncStatus] = useState('idle');
 
-  // 데이터 로드 함수 (캐시 방지 강화)
+  const owner = "wook-44";
+  const repo = "shortsgame_homepage";
+  const path = "public/data.json";
+  const branch = "data";
+
+  // 1. 데이터 로드 (API를 통해 실시간 SHA와 기보유 데이터를 가져옴)
   const loadData = useCallback(async () => {
     setIsLoading(true);
     setSyncStatus('loading');
     try {
-      const owner = "wook-44";
-      const repo = "shortsgame_homepage";
-      const path = "public/data.json";
-      const branch = "data";
-
-      // 1. GitHub API를 통해 실시간 데이터와 SHA값을 가져옵니다. (캐시 무력화 t 파라미터)
-      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}&t=${Date.now()}`, {
-        cache: 'no-store'
-      });
+      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}&t=${Date.now()}`);
       
       if (res.ok) {
         const fileInfo = await res.json();
-        // UTF-8 디코딩 안전하게 처리
         const content = decodeURIComponent(escape(atob(fileInfo.content)));
         const cloudData = JSON.parse(content);
         
@@ -52,8 +48,12 @@ export const AppProvider = ({ children }) => {
           newsFeeds: Array.isArray(cloudData.newsFeeds) ? cloudData.newsFeeds : defaultData.newsFeeds
         });
         setSyncStatus('success');
+      } else if (res.status === 404) {
+        // 파일이 아직 없는 경우 (최초 실행)
+        console.log("서버에 데이터 파일이 없습니다. 새로 생성될 예정입니다.");
+        setSyncStatus('success');
       } else {
-        throw new Error("서버 응답 없음");
+        throw new Error(`상태코드: ${res.status}`);
       }
     } catch (e) {
       console.error("데이터 로드 실패:", e);
@@ -69,22 +69,17 @@ export const AppProvider = ({ children }) => {
     loadData();
   }, [loadData]);
 
-  // 데이터 저장 함수
+  // 2. 데이터 저장 (수정: 404 상황에서도 저장이 가능하도록 보강)
   const syncToGithubServer = async (newData, githubToken) => {
     if (!githubToken) {
       localStorage.setItem('shortsgameData', JSON.stringify(newData));
-      return { success: false, message: "동기화 토큰이 설정되지 않았습니다." };
+      return { success: false, message: "토큰이 입력되지 않았습니다." };
     }
 
     setSyncStatus('loading');
     try {
-      const owner = "wook-44";
-      const repo = "shortsgame_homepage";
-      const path = "public/data.json";
-      const branch = "data";
-      
-      // 1. 최신 SHA값 획득 (충돌 방지)
-      const getFileRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}&t=${Date.now()}`, {
+      // 1) 지점에 파일이 있는지, 있다면 SHA값이 무엇인지 확인
+      const getFileRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`, {
         headers: { "Authorization": `token ${githubToken}` },
         cache: 'no-store'
       });
@@ -93,12 +88,15 @@ export const AppProvider = ({ children }) => {
       if (getFileRes.ok) {
         const fileData = await getFileRes.json();
         sha = fileData.sha;
-      } else {
-        throw new Error("서버의 최신 상태를 가져오지 못했습니다. 토큰을 확인해 주세요.");
+      } else if (getFileRes.status !== 404) {
+        // 404 이외의 에러(401 등)면 중단
+        throw new Error(`연결 오류 (코드: ${getFileRes.status})`);
       }
 
-      // 2. 데이터 인코딩 및 전송
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2))));
+      // 2) 데이터 전송
+      const jsonStr = JSON.stringify(newData, null, 2);
+      const content = btoa(unescape(encodeURIComponent(jsonStr)));
+
       const updateRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
         method: "PUT",
         headers: {
@@ -108,7 +106,7 @@ export const AppProvider = ({ children }) => {
         body: JSON.stringify({
           message: "운영툴: 데이터 실시간 업데이트",
           content: content,
-          sha: sha,
+          sha: sha || undefined, // sha가 있으면 업데이트, 없으면 신규생성
           branch: branch
         })
       });
@@ -119,7 +117,7 @@ export const AppProvider = ({ children }) => {
         return { success: true };
       } else {
         const errData = await updateRes.json();
-        throw new Error(errData.message);
+        throw new Error(errData.message || `전송 실패 (${updateRes.status})`);
       }
     } catch (error) {
       setSyncStatus('error');
