@@ -57,5 +57,12 @@
       "imageUrl": ""
     }
   ],
-  "subAdmins": []
+  "subAdmins": [
+    {
+      "role": "최고 관리자",
+      "username": "addddmin",
+      "password": "123!@#123!@#",
+      "id": 1775642262398
+    }
+  ]
 }
