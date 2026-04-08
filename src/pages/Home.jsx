@@ -51,9 +51,7 @@ const Home = () => {
                 <span style={{ fontSize: '0.8rem', color: '#c77dff', fontWeight: 'bold' }}>{feed.date}</span>
                 <h4 style={{ fontSize: '1.3rem', margin: '0.5rem 0' }}>{feed.title}</h4>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>{feed.content}</p>
-                <div style={{ marginTop: '1.2rem', color: '#fff', fontSize: '0.85rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  더 읽어보기 <ArrowRight size={14} />
-                </div>
+                {/* 더 읽어보기 삭제 */}
               </div>
             </div>
           ))}
