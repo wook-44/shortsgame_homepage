@@ -40,7 +40,7 @@ const Home = () => {
                 <div style={{ padding: '1.5rem 2rem' }}>
                   <span style={{ fontSize: '0.85rem', color: '#c77dff', fontWeight: 'bold' }}>{feed.date}</span>
                   <h4 style={{ fontSize: '1.5rem', margin: '0.5rem 0' }}>{feed.title}</h4>
-                  <p style={{ color: 'var(--text-muted)', lineHeight: '1.6' }}>{feed.content}</p>
+                  <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>{feed.content}</p>
                 </div>
               </div>
             ))}
