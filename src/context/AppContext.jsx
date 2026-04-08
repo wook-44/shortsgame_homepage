@@ -23,31 +23,28 @@ export const AppProvider = ({ children }) => {
   const [siteData, setSiteData] = useState(defaultData);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 1. 공용 데이터 로드 (data 브랜치의 장부를 읽어옵니다)
+  // 1. 공용 데이터 로드 (data 브랜치의 장부를 실시간으로 읽어옵니다)
   useEffect(() => {
     const loadData = async () => {
       try {
-        // 캐시 방지를 위해 깃허브 API를 사용해 실시간으로 데이터를 가져옵니다.
         const owner = "wook-44";
         const repo = "shortsgame_homepage";
         const path = "public/data.json";
-        const branch = "data"; // 데이터 전용 방
+        const branch = "data";
 
-        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}&t=${Date.now()}`);
+        // Raw 주소는 속도가 빠르고 Rate Limit 제약이 적어 실시간 패치에 유리합니다.
+        const response = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}?t=${Date.now()}`);
         
         if (response.ok) {
-          const fileInfo = await response.json();
-          // 깃허브 API는 내용을 Base64로 인코딩해서 주므로 디코딩이 필요합니다.
-          const content = decodeURIComponent(escape(atob(fileInfo.content)));
-          const cloudData = JSON.parse(content);
-          
+          const cloudData = await response.json();
           setSiteData(prev => ({
             ...defaultData,
             ...cloudData,
-            snsLinks: Array.isArray(cloudData.snsLinks) ? cloudData.snsLinks : defaultData.snsLinks
+            snsLinks: Array.isArray(cloudData.snsLinks) ? cloudData.snsLinks : defaultData.snsLinks,
+            newsFeeds: Array.isArray(cloudData.newsFeeds) ? cloudData.newsFeeds : (cloudData.newsFeeds ? Object.values(cloudData.newsFeeds) : defaultData.newsFeeds)
           }));
         } else {
-          // 서버에 없으면 로컬 스토리지 확인
+          console.warn("서버 데이터 응답 없음, 로컬 저장소 확인");
           const saved = localStorage.getItem('shortsgameData');
           if (saved) setSiteData(JSON.parse(saved));
         }
@@ -60,7 +57,7 @@ export const AppProvider = ({ children }) => {
     loadData();
   }, []);
 
-  // 2. 데이터 저장 (data 브랜치에 저장하여 소스 코드 업데이트와 분리)
+  // 2. 데이터 저장 (GitHub API를 사용해 data 브랜치 업데이트)
   const syncToGithubServer = async (newData, githubToken) => {
     if (!githubToken) {
       localStorage.setItem('shortsgameData', JSON.stringify(newData));
@@ -71,8 +68,9 @@ export const AppProvider = ({ children }) => {
       const owner = "wook-44";
       const repo = "shortsgame_homepage";
       const path = "public/data.json";
-      const branch = "data"; // 데이터 전용 방에 저장
+      const branch = "data";
       
+      // 최신 SHA값 획득 (API 사용)
       const getFileRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`, {
         headers: { "Authorization": `token ${githubToken}` }
       });
@@ -83,7 +81,10 @@ export const AppProvider = ({ children }) => {
         sha = fileData.sha;
       }
 
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2))));
+      // 데이터 인코딩 (UTF-8 대응)
+      const jsonStr = JSON.stringify(newData, null, 2);
+      const content = btoa(unescape(encodeURIComponent(jsonStr)));
+
       const updateRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
         method: "PUT",
         headers: {
@@ -91,7 +92,7 @@ export const AppProvider = ({ children }) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          message: "운영툴: 데이터 독립 업데이트",
+          message: "운영툴: 데이터 실시간 업데이트",
           content: content,
           sha: sha,
           branch: branch
