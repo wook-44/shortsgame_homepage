@@ -32,9 +32,11 @@ const Home = () => {
                    onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-10px)'}
                    onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
                 
-                {/* 썸네일 높이를 100px로 확 줄임 (텍스트 강조형) */}
-                <div style={{ height: '100px', background: `linear-gradient(45deg, #${Math.floor(Math.random()*16777215).toString(16)}, #6441A5)` }}></div>
-                
+                {feed.imageUrl ? (
+                  <div style={{ height: '100px', backgroundImage: `url(${feed.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+                ) : (
+                  <div style={{ height: '100px', background: `linear-gradient(45deg, #${Math.floor(Math.random()*16777215).toString(16)}, #6441A5)` }}></div>
+                )}                
                 <div style={{ padding: '1.5rem 2rem' }}>
                   <span style={{ fontSize: '0.85rem', color: '#c77dff', fontWeight: 'bold' }}>{feed.date}</span>
                   <h4 style={{ fontSize: '1.5rem', margin: '0.5rem 0' }}>{feed.title}</h4>

@@ -20,7 +20,7 @@ const Admin = () => {
     companyInfo: siteData.companyInfo
   });
 
-  const [newFeed, setNewFeed] = useState({ date: '', title: '', content: '' });
+  const [newFeed, setNewFeed] = useState({ date: '', title: '', content: '', imageUrl: '' });
   const [newAdmin, setNewAdmin] = useState({ role: '', username: '', password: '' });
 
   const handleLogin = (e) => {
@@ -63,7 +63,7 @@ const Admin = () => {
     if (!newFeed.title || !newFeed.content) return;
     const feedObj = { ...newFeed, id: Date.now() };
     updateData({ newsFeeds: [feedObj, ...(siteData.newsFeeds || [])] });
-    setNewFeed({ date: '', title: '', content: '' });
+    setNewFeed({ date: '', title: '', content: '', imageUrl: '' });
     alert("새로운 피드가 등록/배포되었습니다!");
   };
 
@@ -152,6 +152,7 @@ const Admin = () => {
               <form onSubmit={handleAddFeed} style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem' }}>
                 <input type="text" placeholder="날짜" value={newFeed.date} onChange={e => setNewFeed({...newFeed, date: e.target.value})} style={{ width: '100%', padding: '1rem', marginBottom: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.3)', color: '#fff' }} required />
                 <input type="text" placeholder="제목" value={newFeed.title} onChange={e => setNewFeed({...newFeed, title: e.target.value})} style={{ width: '100%', padding: '1rem', marginBottom: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.3)', color: '#fff' }} required />
+                <input type="text" placeholder="썸네일 이미지 주소 (URL - 옵션)" value={newFeed.imageUrl} onChange={e => setNewFeed({...newFeed, imageUrl: e.target.value})} style={{ width: '100%', padding: '1rem', marginBottom: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
                 <textarea placeholder="내용" value={newFeed.content} onChange={e => setNewFeed({...newFeed, content: e.target.value})} rows="3" style={{ width: '100%', padding: '1rem', marginBottom: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.3)', color: '#fff' }} required />
                 <button type="submit" className="btn">배포하기</button>
               </form>
