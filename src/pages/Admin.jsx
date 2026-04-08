@@ -256,18 +256,28 @@ const Admin = () => {
             <div className="fade-in">
               <h3 style={{ marginBottom: '1.5rem' }}>계정 관리 (서브 관리자)</h3>
               <form onSubmit={handleAddAdmin} style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem' }}>
-                <input type="text" placeholder="직급/역할" value={newAdmin.role} onChange={e => setNewAdmin({...newAdmin, role: e.target.value})} style={{ flex: 1, padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', borderRadius: '8px' }} required />
+                <input type="text" placeholder="직급/역할 (예: 편집팀)" value={newAdmin.role} onChange={e => setNewAdmin({...newAdmin, role: e.target.value})} style={{ flex: 1, padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', borderRadius: '8px' }} required />
                 <input type="text" placeholder="아이디" value={newAdmin.username} onChange={e => setNewAdmin({...newAdmin, username: e.target.value})} style={{ flex: 1, padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', borderRadius: '8px' }} required />
                 <input type="text" placeholder="비밀번호" value={newAdmin.password} onChange={e => setNewAdmin({...newAdmin, password: e.target.value})} style={{ flex: 1, padding: '1rem', background: 'rgba(0,0,0,0.3)', color: '#fff', borderRadius: '8px' }} required />
-                <button type="submit" className="btn">중가</button>
+                <button type="submit" className="btn" style={{ padding: '0 1.5rem' }}>추가</button>
               </form>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                {(siteData.subAdmins || []).map(a => (
-                  <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px' }}>
-                    <span><b>{a.role}</b>: {a.username}</span>
-                    <button onClick={() => handleDeleteAdmin(a.id)} style={{ color: '#ff4d4d', background: 'none', border: 'none' }}><Trash2 size={16} /></button>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                {siteData.subAdmins && siteData.subAdmins.length > 0 ? (
+                  siteData.subAdmins.map(a => (
+                    <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.2rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <div>
+                        <span style={{ fontSize: '0.8rem', color: '#c77dff', display: 'block' }}>{a.role}</span>
+                        <span style={{ fontWeight: '600' }}>{a.username}</span>
+                      </div>
+                      <button onClick={() => handleDeleteAdmin(a.id)} style={{ color: '#ff4d4d', background: 'none', border: 'none', padding: '10px' }}><Trash2 size={18} /></button>
+                    </div>
+                  ))
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)', border: '2px dashed rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+                    등록된 서브 계정이 없습니다. 위의 양식을 이용해 추가해 보세요!
                   </div>
-                ))}
+                )}
               </div>
             </div>
           )}
