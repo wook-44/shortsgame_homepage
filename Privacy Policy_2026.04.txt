@@ -1,0 +1,68 @@
+Privacy Policy
+
+ShortsGame (hereinafter referred to as the “Company”) values the personal information of customers (hereinafter referred to as “Users”) and complies with all relevant laws and regulations, including the Personal Information Protection Act.
+
+1. Purpose of Collection and Use of Personal Information
+The Company collects personal information to the extent necessary for the following purposes:
+
+[Personal Information Collection Categories]
+- Sign-up (Essential): Account linkage ID, Name (or Nickname), Email address
+- Community Use (Essential): Nickname, unique member ID provided by the platform
+- Delivery (Essential): Name, Phone number, Address
+- Tax Processing (Essential): Resident Registration Number (RRN), Name, Address, Phone number
+- Refunds (Essential): Bank account info (Bank name, Account holder, Account number), Payment info
+- Events (Optional): Name, Nickname, Gender, Date of Birth, Email, Phone number
+- Promotions (Optional): Phone number, Email address
+- Inquiry (Essential): Nickname, Member ID, Email address
+- Inquiry/Verification (Optional): Name, DOB, Gender, Address, Verification info, Payment info, Phone number
+- Location (Optional): Personal location information
+
+Automatic Collection: Cookies, service usage records (visit logs, IP, misconduct records), and device info (Unique ID, OS version, hardware info) may be collected for service stability and fraud prevention.
+
+2. Retention and Use Period of Personal Information
+In principle, personal information is destroyed without delay after the purpose is achieved.
+- Withdrawal Grace Period: Data is retained for 14 days after a withdrawal request to minimize damage from theft.
+- Statutory Retention:
+-- Records on contracts/withdrawals: 5 years
+-- Records on payments/supply of goods: 5 years
+-- Records on consumer complaints/disputes: 3 years
+-- Service visit records (Logs): 3 months
+
+3. Destruction Procedures and Methods
+- Procedures: Information is stored for a certain period according to internal policies and laws before being destroyed after the 14-day grace period.
+- Methods: Electronic files are deleted via technical methods that prevent recovery. Hard copies are shredded or incinerated.
+
+4. Outsourcing and Provision of Personal Information
+The Company currently does not outsource the processing of personal information to external professional agencies.
+
+5. Rights of Users and Legal Representatives
+Users and legal representatives of children under 14 may request access, correction, deletion, or suspension of processing of their personal information at any time.
+
+6. Automatic Collection Devices (Cookies) and Opt-out
+The Company uses cookies and web log analysis (e.g., Google Analytics).
+- Opt-out: You can refuse cookies via browser settings (Internet Explorer, Chrome, Edge, etc.).
+- YouTube API: The Company complies with YouTube’s Terms of Service and Google’s Privacy Policy.
+- Targeted Advertising: Behavioral info is collected for marketing via partners like Google, Meta, X, Adjust, TikTok, and MOLOCO.
+- Mobile Opt-out:
+-- Android: Settings -> Google -> Ads -> Delete Advertising ID
+-- iOS: Settings -> Privacy -> Tracking -> Allow Apps to Request to Track (OFF)
+
+7. Measures to Ensure Security
+- Internal Management: We implement internal plans for secure data handling.
+- Encryption: Personal info is transmitted via encrypted channels and sensitive data like passwords are encrypted.
+- Anti-Hacking: We use 24-hour monitoring, firewalls, and vaccine programs.
+- Access Control: Access to personal data is restricted to the minimum necessary personnel with regular training.
+
+8. Privacy Officer and Grievance Department
+The Company has designated the following officer:
+- Privacy Officer: PARK CHANWOOK
+- Department: ShortsGame Game Business Team, Operations Dept.
+- Email: shortsgame.kr@gmail.com
+
+External Reporting Agencies:
+- Privacy Infringement Report Center: privacy.kisa.or.kr (Dial 118)
+- Cybercrime Investigation (Prosecution): spo.go.kr (Dial 1301)
+- Cyber Bureau (Police): cyberbureau.police.go.kr (Dial 182)
+
+9. Changes to the Policy
+The Company may update this policy due to changes in laws or operations. Updates will be announced via the homepage or individual notifications.
