@@ -1,0 +1,54 @@
+Youth Protection Policy
+
+ShortsGame (hereinafter referred to as the "Company") implements a youth protection policy in accordance with relevant laws and regulations to protect youth from various types of harmful information and to facilitate a healthy environment for service usage.
+
+1. Protection of the Rights and Interests of Youth
+- (1) Right to be Protected from Harmful Environments: The Company takes measures to ensure that youth are protected from environments that harm or are likely to harm their health.
+- (2) Right to Personal Information Protection: The Company handles and manages the personal information of youth in accordance with its Privacy Policy. To provide smooth and stable services, the Company collects personal information lawfully and fairly within the minimum necessary scope when a user signs up and does not use it for purposes other than those specified. Furthermore, the Company takes the best measures to ensure the collected personal information is managed securely.
+- (3) Access and Correction: A youth or their legal representative may request to access or correct the personal information of the respective youth.
+
+2. Access Restriction and Management of Harmful Information
+The Company strives to prevent youth from being exposed to harmful environments such as obscenity or verbal violence through the internet or applications. To foster a healthy service environment, the Company strengthens monitoring and prepares improvement plans.
+- (1) Provision of age-rated services
+- (2) Implementation of real-name and identity verification systems
+- (3) Acquisition of consent from legal representatives
+- (4) Application of banned keyword lists
+- (5) Application of chat filtering systems
+- (6) Monitoring of unwholesome information
+- (7) Restriction of advertisement exposure
+- (8) Sanctions against acts that undermine public order and morals
+- (9) Provision of payment and game usage information
+
+3. Training for Youth Protection Personnel
+The Company provides training to youth protection officers and service personnel regarding relevant laws and regulations, sanction standards, handling methods upon discovery of harmful information, and reporting procedures for violations.
+
+4. Counseling and Grievance Handling for Damages
+The Company provides a counseling window for damages and grievances caused by information harmful to youth and strives to prevent the spread of damage that may occur due to delays or lack of experience in handling relief measures.
+
+5. Youth Protection Officer
+The Company has designated a Youth Protection Officer as follows to protect youth from harmful information on information and communication networks:
+- Name: PARK CHANWOOK
+- Department: ShortsGame Game Business Team, Operations Department
+- E-mail: shortsgame.kr@gmail.com
+
+6. Compliance with the Ethics Code and Implementation Guidelines for Internet Companies
+The Company complies with the Ethics Code and Implementation Guidelines for Internet Companies to protect youth.
+
+[Ethics Code of Internet Companies for Youth Protection]
+We provide an internet environment where youth, the leaders of our future, can grow into healthy members of society.
+- Article 1 (Promotion of Youth Protection Policy): We recognize youth as precious subjects of protection and take the lead in providing an environment for their healthy personal growth.
+- Article 2 (Responsibility to Provide a Healthy Internet Environment): We make our best efforts to prevent youth from being exposed to harmful environments such as obscenity or verbal violence.
+- Article 3 (Strengthening Social Cooperation): We support equal opportunity for information access and cooperate with families and organizations to help youth develop self-judgment skills.
+- Article 4 (Personal Information Protection): We value and protect the personal information of youth as an essential part of their individual rights.
+
+[Implementation Guidelines for Youth Protection]
+(1) We actively conduct campaigns to prevent internet dysfunctions and engage in social contribution activities.
+(2) We promote recommended sites and content and identify support services (e.g., Youth Hotline 1388).
+(3) We participate in prevention activities against illegal acts like cyber violence, copyright infringement, and identity theft.
+(4) We maintain a cooperative system with government agencies and related organizations.
+(5) We comply with consent procedures for legal representatives and introduce payment limits for youth.
+(6) We strengthen monitoring systems to prevent the distribution of illegal/harmful information.
+(7) We strengthen information security and conduct training for internal personnel handling youth data.
+(8) We provide regular education on preventing damages from harmful environments to our personnel.
+(9) We develop participation programs for youth and parents in collaboration with government agencies.
+(10) We follow and regularly evaluate these guidelines to ensure they are actively practiced.
