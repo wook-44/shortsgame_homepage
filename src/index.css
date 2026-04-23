@@ -159,3 +159,12 @@ h1, h2, h3, h4 {
     transform: translateY(0);
   }
 }
+
+.policy-link {
+  transition: color 0.3s ease;
+}
+
+.policy-link:hover {
+  color: #fff !important;
+  text-decoration: underline !important;
+}
