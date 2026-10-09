@@ -14,7 +14,7 @@ const Navigation = () => {
     <nav className="navbar">
       <Link to="/" className="logo">
         <Gamepad2 size={28} color="#c77dff" />
-        <span className="title-display">ShortsGame</span>
+        <span className="title-display">Kyeol</span>
       </Link>
       <div className="nav-links">
         <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>뉴스 피드</Link>

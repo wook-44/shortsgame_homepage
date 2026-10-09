@@ -1,7 +1,7 @@
 Terms of Service
 Chapter 1: General Provisions
 Article 1 (Purpose)
-The purpose of these Terms of Service is to prescribe the rights, obligations, and other necessary matters between ShortsGame (hereinafter referred to as the “Company”) and the service user (hereinafter referred to as the “Member”) regarding the use of game services provided by the Company, along with incidental game-related applications, brand websites (hereinafter referred to as the “Website”), and other services (collectively referred to as the “Service”).
+The purpose of these Terms of Service is to prescribe the rights, obligations, and other necessary matters between Kyeol (hereinafter referred to as the “Company”) and the service user (hereinafter referred to as the “Member”) regarding the use of game services provided by the Company, along with incidental game-related applications, brand websites (hereinafter referred to as the “Website”), and other services (collectively referred to as the “Service”).
 The Company’s Privacy Policy applies simultaneously to the use of the Service. By downloading, accessing, or using the game or Service, or by creating a Company account, the Member is deemed to have accepted and agreed to these Terms of Service and the Company’s Privacy Policy.
 
 Article 2 (Definition of Terms)
@@ -152,11 +152,11 @@ Article 17 (Intellectual Property Rights)
 (3) The Company may delete User Content that violates these Terms or harms the Service's reputation without prior notice.
 (4) Copyright Infringement Claims: If you believe your intellectual property has been infringed, please contact:
 
-Company: ShortsGame
+Company: Kyeol
 
 Address: 417 Eonju-ro, Gangnam-gu, Seoul, Republic of Korea
 
-Email: help@shortsgame.co.kr
+Email: videokillthe@kyeol.win
 
 Article 18 (Content Service)
 (1) The Company provides paid content (items, currency).
@@ -227,4 +227,4 @@ Privacy and Youth Protection Contact:
 
 Officer: PARK CHANWOOK
 
-Email: shortsgame.kr@gmail.com
+Email: videokillthe@kyeol.win

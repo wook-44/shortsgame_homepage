@@ -62,7 +62,7 @@ const Home = () => {
       <footer className="glass-panel" style={{ padding: '3rem', marginTop: '5rem', marginBottom: '3rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '2rem' }}>
           <div style={{ flex: '1', minWidth: '300px' }}>
-            <h4 className="title-display" style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>ShortsGame</h4>
+            <h4 className="title-display" style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Kyeol</h4>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.6' }}>{siteData.companyInfo}</p>
           </div>
           
@@ -90,7 +90,7 @@ const Home = () => {
           <a href="/youth.txt" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} className="policy-link">청소년보호정책</a>
         </div>
         <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-          © 2026 ShortsGame. All rights reserved.
+          © 2026 Kyeol. All rights reserved.
         </div>
       </footer>
     </div>

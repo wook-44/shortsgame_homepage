@@ -3,12 +3,12 @@ import React, { createContext, useState, useEffect, useCallback } from 'react';
 // === 데이터베이스 초기값 설정 === 
 const defaultData = {
   heroTitle: "차원이 다른 도파민 퍼즐, Dopamine Smith",
-  heroSubtitle: "ShortsGame이 선보이는 첫 번째 마스터피스. 대장장이 키우기와 퍼즐의 완벽한 조화.",
+  heroSubtitle: "결이 선보이는 첫 번째 마스터피스. 대장장이 키우기와 퍼즐의 완벽한 조화.",
   snsLinks: [
     { id: 1, name: "YouTube", url: "https://youtube.com/@shortsgame", iconUrl: "" },
     { id: 2, name: "Twitter", url: "https://twitter.com/shortsgame", iconUrl: "" }
   ],
-  companyInfo: "회사명: ShortsGame | 대표: 무명 | 이메일: contact@shortsgame.com",
+  companyInfo: "회사명: 결 (Kyeol) | 대표: 박찬욱 | 이메일: videokillthe@kyeol.win",
   newsFeeds: [
     { id: 1, date: "2026. 04. 08", title: "도파민 스미스, 시스템 개편!", content: "짜릿한 손맛을 경험해 보세요.", imageUrl: "" }
   ],
