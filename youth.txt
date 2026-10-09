@@ -1,6 +1,6 @@
 Youth Protection Policy
 
-ShortsGame (hereinafter referred to as the "Company") implements a youth protection policy in accordance with relevant laws and regulations to protect youth from various types of harmful information and to facilitate a healthy environment for service usage.
+Kyeol (hereinafter referred to as the "Company") implements a youth protection policy in accordance with relevant laws and regulations to protect youth from various types of harmful information and to facilitate a healthy environment for service usage.
 
 1. Protection of the Rights and Interests of Youth
 - (1) Right to be Protected from Harmful Environments: The Company takes measures to ensure that youth are protected from environments that harm or are likely to harm their health.
@@ -28,8 +28,8 @@ The Company provides a counseling window for damages and grievances caused by in
 5. Youth Protection Officer
 The Company has designated a Youth Protection Officer as follows to protect youth from harmful information on information and communication networks:
 - Name: PARK CHANWOOK
-- Department: ShortsGame Game Business Team, Operations Department
-- E-mail: shortsgame.kr@gmail.com
+- Department: Kyeol Game Business Team, Operations Department
+- E-mail: videokillthe@kyeol.win
 
 6. Compliance with the Ethics Code and Implementation Guidelines for Internet Companies
 The Company complies with the Ethics Code and Implementation Guidelines for Internet Companies to protect youth.

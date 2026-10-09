@@ -1,6 +1,6 @@
 Privacy Policy
 
-ShortsGame (hereinafter referred to as the “Company”) values the personal information of customers (hereinafter referred to as “Users”) and complies with all relevant laws and regulations, including the Personal Information Protection Act.
+Kyeol (hereinafter referred to as the “Company”) values the personal information of customers (hereinafter referred to as “Users”) and complies with all relevant laws and regulations, including the Personal Information Protection Act.
 
 1. Purpose of Collection and Use of Personal Information
 The Company collects personal information to the extent necessary for the following purposes:
@@ -56,8 +56,8 @@ The Company uses cookies and web log analysis (e.g., Google Analytics).
 8. Privacy Officer and Grievance Department
 The Company has designated the following officer:
 - Privacy Officer: PARK CHANWOOK
-- Department: ShortsGame Game Business Team, Operations Dept.
-- Email: shortsgame.kr@gmail.com
+- Department: Kyeol Game Business Team, Operations Dept.
+- Email: videokillthe@kyeol.win
 
 External Reporting Agencies:
 - Privacy Infringement Report Center: privacy.kisa.or.kr (Dial 118)
