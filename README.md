@@ -1,16 +1,23 @@
-# React + Vite
+# kyeol.win — 결(Kyeol) 공식 홈페이지
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+정적 HTML 사이트. `main`에 푸시하면 GitHub Actions가 `site/`를 `gh-pages`로 배포 → kyeol.win
 
-Currently, two official plugins are available:
+## 구조
+| 경로 | 내용 |
+|---|---|
+| `tools/pages/*.html` | 페이지 본문 (맨 위 주석에 제목·설명·출력 경로) |
+| `tools/build.py` | 공통 헤더·푸터를 붙여 `site/`에 HTML 생성 · **회사 정보(사업자번호 등)는 여기 `SITE`에서 수정** |
+| `site/assets/` | 공통 CSS·JS |
+| `site/img/` | 게임 이미지 (webp) |
+| `site/riftseal/privacy`, `site/riftseal/delete` | 균열봉인 개인정보처리방침 · 계정 삭제 요청 (Play 콘솔 등록 URL — 경로 변경 금지) |
+| `site/app-ads.txt`, `site/ads.txt` | AdMob / AdSense 인증 |
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 페이지
+- `/` 홈 · `/riftseal/` 균열봉인! 마법소녀 · `/dopamine-smith/` 도파민 스미스
+- `/support/` 고객지원 · `/privacy/` `/terms/` `/youth/` 정책
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 로컬 확인
+```bash
+python3 tools/build.py
+cd site && python3 -m http.server 8000
+```
